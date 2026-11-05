@@ -168,7 +168,7 @@ SWE-Ladder uses the rule-based router; the neural router is an ablation.
 ## Quick start
 
 ```bash
-git clone https://github.com/sekongger/SWE-Ladder
+git clone https://github.com/ZJU-REAL/SWE-Ladder
 cd SWE-Ladder
 
 # 1. Prepare the pinned upstream workspace as described in integration/README.md,

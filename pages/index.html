@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>SWE-Ladder | Progressive Privileged Self-Distillation for SWE Agents</title>
+    <meta
+      content="SWE-Ladder turns each verified repair into stage-specific evidence for localization, reproduction, and patching, and distills it in repair order to train a single end-to-end software-engineering agent."
+      name="description"
+    />
+    <meta content="#0b0f14" name="theme-color" />
+    <meta content="dark" name="color-scheme" />
+    <link href="assets/favicon.svg" rel="icon" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <a class="sl-skip" href="#main">Skip to content</a>
+
+    <header class="sl-nav">
+      <a class="sl-brand" href="#top">
+        <svg aria-hidden="true" class="sl-brand-mark" viewBox="0 0 20 24">
+          <path d="M4 1v22M16 1v22" />
+          <path class="r1" d="M4 18h12" />
+          <path class="r2" d="M4 12h12" />
+          <path class="r3" d="M4 6h12" />
+        </svg>
+        <span>swe-ladder</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#method"><i>01</i>method</a>
+        <a href="#results"><i>02</i>results</a>
+        <a href="#analysis"><i>03</i>analysis</a>
+        <a href="#takeaways"><i>04</i>takeaways</a>
+      </nav>
+      <a class="sl-btn sl-btn-sm" href="https://github.com/ZJU-REAL/SWE-Ladder">Code ↗</a>
+      <div aria-hidden="true" class="sl-progress"><i></i></div>
+    </header>
+
+    <main id="main">
+      <!-- ============================== Hero ============================== -->
+      <section class="sl-hero" id="top">
+        <div class="sl-hero-copy">
+          <p class="sl-prompt"><span>~/swe-ladder</span> <b>$</b> localize <i>→</i> reproduce <i>→</i> patch</p>
+          <h1 class="sl-title">SWE-Ladder</h1>
+          <p class="sl-subtitle">
+            Learning to <span class="c-loc">Localize</span>, <span class="c-rep">Reproduce</span>, and
+            <span class="c-patch">Patch</span> via Progressive Privileged Self-Distillation
+          </p>
+          <p class="sl-hero-lede">
+            One end-to-end software-engineering agent, trained with stage-specific evidence in repair order. No
+            teacher, no stage labels, and no fixed pipeline at test time.
+          </p>
+          <div class="sl-hero-links">
+            <a class="sl-btn sl-btn-primary" href="https://github.com/ZJU-REAL/SWE-Ladder">
+              <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.34c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.83-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" /></svg>
+              View code
+            </a>
+            <a class="sl-btn" href="#method">How it works ↓</a>
+          </div>
+        </div>
+
+        <div aria-label="Headline results on SWE-bench Verified" class="sl-term sl-hero-term" role="group">
+          <div class="sl-term-bar">
+            <span aria-hidden="true" class="sl-dots"><i></i><i></i><i></i></span>
+            <span class="sl-term-title">swe-bench-verified · 500 instances · pass@1</span>
+          </div>
+          <div class="sl-term-body">
+            <p class="sl-cmd"><b>#</b> Qwen3-4B-Instruct-2507, no SFT before RL<span class="sl-caret"></span></p>
+            <div class="sl-diff">
+              <p class="sl-diff-hunk">@@ R2E-Gym scaffold @@</p>
+              <p class="del"><i>-</i>Qwen3-4B-Instruct-2507 (base) <b>9.6</b></p>
+              <p class="add"><i>+</i>SWE-Ladder <b>16.4</b><em>+6.8</em></p>
+              <p class="sl-diff-hunk">@@ OpenHands scaffold @@</p>
+              <p class="del"><i>-</i>Qwen3-4B-Instruct-2507 (base) <b>13.0</b></p>
+              <p class="add"><i>+</i>SWE-Ladder <b>17.6</b><em>+4.6</em></p>
+            </div>
+            <p class="sl-ok"><b>✓</b> one policy at test time: no teacher, no stage labels</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================= The idea ========================= -->
+      <section class="sl-idea sl-wrap" id="story">
+        <p class="sl-label">// the idea</p>
+        <h2 class="sl-thesis">
+          Show the teacher only what each stage needs, and teach the stages in repair order.
+        </h2>
+        <div aria-label="What changes in the teacher's evidence" class="sl-review" role="group">
+          <div class="sl-review-head"><span>teacher_evidence.diff</span><span>OPSD → SWE-Ladder</span></div>
+          <p class="del"><i>-</i>Teacher sees the full reference patch at every step: the same evidence at every stage.</p>
+          <p class="add"><i>+</i><span><b class="c-loc">LOC</b> steps get the changed files and line ranges.</span></p>
+          <p class="add"><i>+</i><span><b class="c-rep">REP</b> steps get the fail-to-pass tests.</span></p>
+          <p class="add"><i>+</i><span><b class="c-patch">PATCH</b> steps get the reference diff, one stage at a time, in that order.</span></p>
+        </div>
+        <p class="sl-lede">
+          Reinforcement learning with verifiable rewards gives one signal for the final patch. On-policy
+          self-distillation (OPSD) adds dense token-level guidance, but a teacher shown the full reference patch at
+          every step gives <strong>the same evidence at every stage</strong>. SWE-Ladder turns each verified repair
+          into three stage-specific evidence views and distills them one stage at a time, training a single
+          end-to-end agent that sees no privileged evidence at inference time.
+        </p>
+      </section>
+
+      <!-- ========================= Animated method figure ========================= -->
+      <section class="sl-figwrap" id="method">
+        <figure class="sl-fig reveal" data-fig>
+          <div class="sl-stage" data-fig-stage>
+            <svg aria-hidden="true" class="sl-wires" data-fig-wires></svg>
+
+            <!-- Row 1: rollout -->
+            <div class="sl-row sl-roll" data-row="rollout">
+              <span class="sl-row-tag">Rollout · GRPO</span>
+              <div class="sl-box sl-issue" data-a="issue">
+                <span class="sl-ico">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>
+                </span>
+                <b>repo</b>
+                <span class="sl-plus">+</span>
+                <span class="sl-ico bug">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z" /><path d="M9 11h7M9 15h7M9 7h3" /></svg>
+                </span>
+                <b>issue</b>
+              </div>
+              <div class="sl-box sl-agent" data-a="agent">
+                <span class="sl-bot">
+                  <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="8" y="12" width="24" height="18" rx="7" /><path d="M20 12V7" /><circle cx="20" cy="6" r="2" /><circle class="eye" cx="15" cy="20" r="2" /><circle class="eye" cx="25" cy="20" r="2" /><path d="M15 25.5h10" /></svg>
+                </span>
+                <b>student</b>
+                <span class="sl-loop" aria-hidden="true">⇄</span>
+                <b>env</b>
+                <small>no privileged evidence</small>
+              </div>
+              <div class="sl-box sl-call" data-a="call">
+                <p class="sl-bubble" data-bubble>
+                  <span class="k">&lt;function=</span><span class="fn">search</span><span class="k">&gt;</span>
+                  <span class="arg">"proxy.get" oauthlib/</span>
+                </p>
+                <ol class="sl-traj" data-a="traj" aria-label="Trajectory">
+                  <li data-k="0">a1</li><li data-k="1">a2</li><li data-k="2">a3</li>
+                  <li data-k="3">a4</li><li data-k="4">a5</li><li data-k="5">a6</li>
+                </ol>
+              </div>
+              <div class="sl-box sl-tests" data-a="tests" data-step="r2">
+                <span class="sl-mini-title">Test results</span>
+                <span class="sl-verdicts"><i class="ok">✓</i><i class="ok">✓</i><i class="no">✗</i><i class="ok">✓</i></span>
+                <small>group of rollouts</small>
+              </div>
+              <div class="sl-box sl-reward" data-a="reward" data-step="r3">
+                <span class="sl-mini-title">Group-relative reward</span>
+                <span class="sl-bars"><i style="--h: 0.9"></i><i style="--h: 0.35"></i><i style="--h: 0.6"></i><i style="--h: 0.8"></i></span>
+              </div>
+              <div class="sl-box sl-lgrpo" data-a="lgrpo" data-step="r4">
+                <span>L<sub>GRPO</sub></span>
+                <small>every valid token</small>
+              </div>
+            </div>
+
+            <!-- Row 2: router -->
+            <div class="sl-row sl-route" data-row="route">
+              <span class="sl-row-tag">Rule-based stage router</span>
+              <div class="sl-box sl-router" data-a="router">
+                <div class="sl-fsm" aria-label="Router states">
+                  <span class="st loc" data-state="loc">LOC</span>
+                  <span class="ar">→</span>
+                  <span class="st rep" data-state="rep">REP</span>
+                  <span class="ar">→</span>
+                  <span class="st patch" data-state="patch">PATCH</span>
+                </div>
+                <p class="sl-rule" data-rule aria-live="polite">
+                  Forward in repair order, with state-dependent backtracking.
+                </p>
+              </div>
+              <ol class="sl-seq" data-a="seq" aria-label="Routed stage sequence">
+                <li class="loc" data-k="0"><b>LOC</b><span>search</span><i>a1</i></li>
+                <li class="rep" data-k="1"><b>REP</b><span>create repro</span><i>a2</i></li>
+                <li class="patch" data-k="2"><b>PATCH</b><span>edit source</span><i>a3</i></li>
+                <li class="loc" data-k="3"><b>LOC</b><span>search</span><i>a4</i></li>
+                <li class="patch" data-k="4"><b>PATCH</b><span>edit source</span><i>a5</i></li>
+                <li class="rep" data-k="5"><b>REP</b><span>run repro</span><i>a6</i></li>
+              </ol>
+            </div>
+
+            <!-- Row 3: the ladder -->
+            <div class="sl-phase loc" data-phase="0">
+              <p class="sl-phase-head"><span>Phase 1</span> LOC · Localization</p>
+              <div class="sl-teacher">
+                <span class="sl-frozen" title="frozen teacher">❄ Teacher</span>
+                <span class="sl-pi">privileged: gold LOC</span>
+              </div>
+              <pre class="sl-evidence" data-step="p"><code><span class="key">"file"</span>: "oauthlib/common.py",
+<span class="key">"removed_lines"</span>: [
+  "310: key = self.proxy.get(k.upper(), k)"
+]</code></pre>
+              <div class="sl-mask" data-step="p" aria-label="Distillation mask">
+                <i>1</i><i>0</i><i>0</i><i>1</i><i>0</i><i>0</i>
+              </div>
+              <p class="sl-lopsd" data-a="op0" data-step="p">L<sub>OPSD</sub>(T<sub>LOC</sub>)</p>
+            </div>
+            <div class="sl-phase rep" data-phase="1">
+              <p class="sl-phase-head"><span>Phase 2</span> REP · Reproduction</p>
+              <div class="sl-teacher">
+                <span class="sl-frozen" title="frozen teacher">❄ Teacher</span>
+                <span class="sl-pi">privileged: gold REP</span>
+              </div>
+              <pre class="sl-evidence" data-step="p"><code><span class="cm"># fail-to-pass test</span>
+<span class="key">def</span> test_login():
+    ...
+    <span class="key">assert</span> user.role == "admin"</code></pre>
+              <div class="sl-mask" data-step="p" aria-label="Distillation mask">
+                <i>0</i><i>1</i><i>0</i><i>0</i><i>0</i><i>1</i>
+              </div>
+              <p class="sl-lopsd" data-a="op1" data-step="p">L<sub>OPSD</sub>(T<sub>REP</sub>)</p>
+            </div>
+            <div class="sl-phase patch" data-phase="2">
+              <p class="sl-phase-head"><span>Phase 3</span> PATCH · Patch generation</p>
+              <div class="sl-teacher">
+                <span class="sl-frozen" title="frozen teacher">❄ Teacher</span>
+                <span class="sl-pi">privileged: gold PATCH</span>
+              </div>
+              <pre class="sl-evidence" data-step="p"><code>--- a/auth.py
++++ b/auth.py
+@@ def login(user):
+<span class="del">-   if user.is_admin:</span>
+<span class="add">+   if user.role == "admin":</span></code></pre>
+              <div class="sl-mask" data-step="p" aria-label="Distillation mask">
+                <i>0</i><i>0</i><i>1</i><i>0</i><i>1</i><i>0</i>
+              </div>
+              <p class="sl-lopsd" data-a="op2" data-step="p">L<sub>OPSD</sub>(T<sub>PATCH</sub>)</p>
+            </div>
+
+            <!-- Row 4: objective + schedule -->
+            <div class="sl-objective" data-a="objective">
+              <p class="sl-formula">
+                L = L<sub>GRPO</sub> + λ · L<sub>OPSD</sub>(<span class="sl-ts" data-ts>T<sub>stage</sub></span>)
+                <small>λ = 0.15 · teacher top-K = 16</small>
+              </p>
+              <div class="sl-sched" aria-label="Progressive schedule">
+                <span class="seg loc" style="--n: 30"><i></i><b>LOC</b> 30 it.</span>
+                <span class="seg rep" style="--n: 20"><i></i><b>REP</b> 20 it.</span>
+                <span class="seg patch" style="--n: 20"><i></i><b>PATCH</b> 20 it.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sl-controls">
+            <button aria-label="Pause animation" class="sl-playbtn" data-fig-play type="button">
+              <svg aria-hidden="true" class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" /></svg>
+              <svg aria-hidden="true" class="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" /></svg>
+            </button>
+            <div aria-label="Show one part of the method" class="sl-tabs" role="group">
+              <button data-fig-tab="0" type="button"><b>01</b> Rollout<i></i></button>
+              <button data-fig-tab="1" type="button"><b>02</b> Route<i></i></button>
+              <button data-fig-tab="2" type="button"><b>03</b> Ladder<i></i></button>
+            </div>
+          </div>
+          <figcaption>
+            A rule-based router labels each step of an end-to-end rollout as <b class="c-loc">LOC</b>,
+            <b class="c-rep">REP</b>, or <b class="c-patch">PATCH</b>. In each phase, a frozen teacher receives only
+            that stage's evidence and distills only that stage's tokens, while GRPO keeps optimizing the full
+            trajectory. Example contents are illustrative, as in the paper figure.
+          </figcaption>
+          <details class="sl-details">
+            <summary>Paper figure</summary>
+            <a href="assets/overview.png" rel="noopener" target="_blank">
+              <img
+                alt="SWE-Ladder overview: a rule-based router assigns each step to LOC, REP, or PATCH; a frozen teacher sees only the matching evidence; GRPO optimizes the full trajectory."
+                height="1024"
+                loading="lazy"
+                src="assets/overview.png"
+                width="1800"
+              />
+            </a>
+          </details>
+        </figure>
+      </section>
+
+      <!-- ============================== Method ============================== -->
+      <section class="sl-section sl-wrap loc">
+        <header class="sl-rung reveal">
+          <span aria-hidden="true" class="sl-rung-rail"></span>
+          <p class="sl-rung-tag">rung 01 · method</p>
+          <h2>Three evidence views, one router, one stage at a time.</h2>
+        </header>
+
+        <h3 class="sl-sub">Stage-specific evidence</h3>
+        <p class="sl-p">
+          The verified repair and its tests are converted into three evidence views. The student never sees any of
+          them. All teacher variants share the student's system and task instructions; only the appended evidence
+          block differs.
+        </p>
+        <div class="sl-panel sl-evtable reveal">
+          <div class="sl-et-row sl-et-head">
+            <span>stage</span><span>router sees</span><span>teacher evidence</span><span>distilled tokens</span>
+          </div>
+          <div class="sl-et-row loc">
+            <span><i class="sl-chip loc">LOC</i></span>
+            <span>Search, file view, read-only shell</span>
+            <span>Changed non-test files, old-side hunk ranges, and pre-patch source lines</span>
+            <span>Response tokens labeled LOC during the LOC phase</span>
+          </div>
+          <div class="sl-et-row rep">
+            <span><i class="sl-chip rep">REP</i></span>
+            <span>Repro script creation/execution, test file edits, test runs</span>
+            <span>Fail-to-pass test identifiers/names, reference test code, and candidate test changes</span>
+            <span>Response tokens labeled REP during the REP phase</span>
+          </div>
+          <div class="sl-et-row patch">
+            <span><i class="sl-chip patch">PATCH</i></span>
+            <span>Source-file edits</span>
+            <span>The verified repair diff</span>
+            <span>Response tokens labeled PATCH during the PATCH phase</span>
+          </div>
+          <p class="sl-et-note">
+            <span aria-hidden="true">#</span> Stage labels are annotations for distillation only. They do not constrain
+            tool choices, truncate rollouts, or change the reward.
+          </p>
+        </div>
+
+        <div class="sl-two">
+          <div class="sl-panel reveal">
+            <div class="sl-panel-head">
+              <h3>Progressive schedule</h3>
+              <p>Each phase resumes the previous checkpoint.</p>
+            </div>
+            <ol class="sl-ladder">
+              <li class="patch"><span class="sl-ladder-n">3</span><b>patch_<wbr />generation</b><span>20 iterations</span><code>global_step_70</code></li>
+              <li class="rep"><span class="sl-ladder-n">2</span><b>localized_<wbr />issue_<wbr />reproduction</b><span>20 iterations</span><code>global_step_50</code></li>
+              <li class="loc"><span class="sl-ladder-n">1</span><b>causal_<wbr />localization</b><span>30 iterations</span><code>global_step_30</code></li>
+            </ol>
+            <p class="sl-small">
+              The 70-iteration total matches the GRPO control: both runs take the same 70 policy updates on the same
+              data and differ only in where privilege is applied.
+            </p>
+          </div>
+          <div class="sl-panel reveal">
+            <div class="sl-panel-head">
+              <h3>Objective</h3>
+              <p>Only the active stage's tokens get the OPSD term.</p>
+            </div>
+            <p class="sl-eq">L = L<sub>GRPO</sub> + λ · L<sub>OPSD</sub></p>
+            <dl class="sl-facts">
+              <div><dt>λ</dt><dd>0.15</dd></div>
+              <div><dt>teacher top-K</dt><dd>16</dd></div>
+              <div><dt>teacher</dt><dd>frozen copy of the base checkpoint</dd></div>
+              <div><dt>OPSD term</dt><dd>stop-gradient top-K reverse-KL surrogate</dd></div>
+              <div><dt>per iteration</dt><dd>16 tasks × 4 rollouts = 64 trajectories</dd></div>
+              <div><dt>entropy bonus</dt><dd>0.005</dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <h3 class="sl-sub">The stage router</h3>
+        <p class="sl-p">
+          The router is a deterministic tool-level state machine. It consumes only the parsed tool call and advances
+          forward in repair order, with state-dependent backtracking.
+        </p>
+        <div class="sl-panel sl-fsm-card reveal">
+          <svg class="sl-fsm-svg" viewBox="0 0 720 290" role="img" aria-label="Router state machine: LOC to REP to PATCH, with backtracking edges">
+            <defs>
+              <marker id="fsm-ar" markerHeight="9" markerUnits="userSpaceOnUse" markerWidth="9" orient="auto" refX="8" refY="4.5"><path d="M0,0.5 L9,4.5 L0,8.5z" fill="#7d8aa0" /></marker>
+              <marker id="fsm-ar-ink" markerHeight="9" markerUnits="userSpaceOnUse" markerWidth="9" orient="auto" refX="8" refY="4.5"><path d="M0,0.5 L9,4.5 L0,8.5z" fill="#e6edf3" /></marker>
+            </defs>
+            <g class="fwd">
+              <path d="M188 140 H290" marker-end="url(#fsm-ar-ink)" />
+              <path d="M428 140 H530" marker-end="url(#fsm-ar-ink)" />
+            </g>
+            <g class="back">
+              <path d="M352 103 C 330 55, 150 55, 128 101" marker-end="url(#fsm-ar)" />
+              <path d="M600 103 C 560 8, 160 8, 112 101" marker-end="url(#fsm-ar)" />
+              <path d="M588 177 C 566 225, 392 225, 370 179" marker-end="url(#fsm-ar)" />
+              <path class="skip" d="M120 177 C 160 285, 572 285, 612 179" marker-end="url(#fsm-ar)" />
+            </g>
+            <g class="node loc"><rect x="52" y="105" width="136" height="70" rx="10" /><text x="120" y="147">LOC</text></g>
+            <g class="node rep"><rect x="292" y="105" width="136" height="70" rx="10" /><text x="360" y="147">REP</text></g>
+            <g class="node patch"><rect x="532" y="105" width="136" height="70" rx="10" /><text x="600" y="147">PATCH</text></g>
+            <g class="lbl">
+              <text x="240" y="60">3 exploration actions</text>
+              <text x="360" y="14">1 exploration action</text>
+              <text x="480" y="232">1 test run</text>
+              <text class="skip" x="366" y="284">patch proposal (skips REP)</text>
+            </g>
+          </svg>
+          <ul class="sl-rules">
+            <li><i class="sl-chip rep">REP</i> → <i class="sl-chip loc">LOC</i> after three consecutive exploration actions.</li>
+            <li><i class="sl-chip patch">PATCH</i> → <i class="sl-chip rep">REP</i> after one test run.</li>
+            <li><i class="sl-chip patch">PATCH</i> → <i class="sl-chip loc">LOC</i> after one exploration action.</li>
+            <li><i class="sl-chip loc">LOC</i> → <i class="sl-chip patch">PATCH</i> on a patch proposal, skipping REP.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============================== Results ============================== -->
+      <section class="sl-section sl-wrap rep" id="results">
+        <header class="sl-rung reveal">
+          <span aria-hidden="true" class="sl-rung-rail"></span>
+          <p class="sl-rung-tag">rung 02 · results</p>
+          <h2>Higher pass@1, shorter trajectories, and agents that finish on their own.</h2>
+        </header>
+        <p class="sl-p">
+          All methods start from <b>Qwen3-4B-Instruct-2507</b> and are evaluated on the 500 instances of SWE-bench
+          Verified without task-specific supervised fine-tuning before RL. <b>GRPO+OPSD</b> shows the teacher the
+          full reference patch at every step; <b>SDAR</b> is a gated OPSD method for agents, given the same patch
+          evidence.
+        </p>
+
+        <figure class="sl-panel sl-res-card reveal">
+          <figcaption class="sl-panel-head sl-res-top">
+            <div>
+              <h3>SWE-bench Verified, 500 instances</h3>
+              <p data-proto>R2E-Gym scaffold · 64K context · max 150 steps · temperature 0.7</p>
+            </div>
+            <div aria-label="Scaffold" class="sl-seg" data-scaffold role="group">
+              <button aria-pressed="true" data-s="0" type="button">r2e-gym</button>
+              <button aria-pressed="false" data-s="1" type="button">openhands</button>
+            </div>
+          </figcaption>
+          <div class="sl-res" role="table" aria-label="Results by method">
+            <div class="sl-res-row sl-res-head" role="row">
+              <span role="columnheader">method</span>
+              <span role="columnheader">pass@1 (%) <em>↑</em></span>
+              <span role="columnheader">avg. steps <em>↓</em></span>
+              <span role="columnheader">env_done (%) <em>↑</em></span>
+            </div>
+            <div class="sl-res-row" role="row" data-v="9.6,26.5,84.2|13.0,40.8,79.2">
+              <span role="rowheader">Base</span>
+              <span class="m pass" role="cell"><i></i><b></b></span>
+              <span class="m steps" role="cell"><i></i><b></b></span>
+              <span class="m done" role="cell"><i></i><b></b></span>
+            </div>
+            <div class="sl-res-row" role="row" data-v="10.4,82.9,36.0|11.2,56.2,78.6">
+              <span role="rowheader">GRPO</span>
+              <span class="m pass" role="cell"><i></i><b></b></span>
+              <span class="m steps" role="cell"><i></i><b></b></span>
+              <span class="m done" role="cell"><i></i><b></b></span>
+            </div>
+            <div class="sl-res-row" role="row" data-v="12.4,39.7,67.4|12.4,15.4,99.0">
+              <span role="rowheader">GRPO+OPSD <small>full patch</small></span>
+              <span class="m pass" role="cell"><i></i><b></b></span>
+              <span class="m steps" role="cell"><i></i><b></b></span>
+              <span class="m done" role="cell"><i></i><b></b></span>
+            </div>
+            <div class="sl-res-row" role="row" data-v="4.6,34.5,88.0|6.8,37.4,92.8">
+              <span role="rowheader">SDAR</span>
+              <span class="m pass" role="cell"><i></i><b></b></span>
+              <span class="m steps" role="cell"><i></i><b></b></span>
+              <span class="m done" role="cell"><i></i><b></b></span>
+            </div>
+            <div class="sl-res-row ours" role="row" data-v="16.4,19.3,98.6|17.6,16.6,99.4">
+              <span role="rowheader">SWE-Ladder</span>
+              <span class="m pass" role="cell"><i></i><b></b></span>
+              <span class="m steps" role="cell"><i></i><b></b></span>
+              <span class="m done" role="cell"><i></i><b></b></span>
+            </div>
+          </div>
+          <p class="sl-res-note" data-res-note aria-live="polite"></p>
+        </figure>
+
+        <div class="sl-two">
+          <figure class="sl-panel sl-abl reveal">
+            <figcaption class="sl-panel-head">
+              <h3>Ablations (R2E-Gym, pass@1 %)</h3>
+              <p>Every stage matters, and so does the order. Dashed line: full method.</p>
+            </figcaption>
+            <div class="sl-abl-list">
+              <p class="sl-abl-group">full method</p>
+              <div class="sl-abl-row ours" style="--v: 16.4"><span>SWE-Ladder</span><i></i><b>16.4</b></div>
+              <p class="sl-abl-group">remove one stage</p>
+              <div class="sl-abl-row" style="--v: 11.2"><span>without LOC</span><i></i><b>11.2</b></div>
+              <div class="sl-abl-row" style="--v: 13.2"><span>without REP</span><i></i><b>13.2</b></div>
+              <div class="sl-abl-row" style="--v: 14.0"><span>without PATCH</span><i></i><b>14.0</b></div>
+              <p class="sl-abl-group">change the schedule</p>
+              <div class="sl-abl-row" style="--v: 12.4"><span>all stages at once</span><i></i><b>12.4</b></div>
+              <div class="sl-abl-row" style="--v: 11.4"><span>reversed order</span><i></i><b>11.4</b></div>
+              <div class="sl-abl-row" style="--v: 12.6"><span>REP first</span><i></i><b>12.6</b></div>
+            </div>
+          </figure>
+          <figure class="sl-panel sl-router-card reveal">
+            <figcaption class="sl-panel-head">
+              <h3>Agreement is not utility</h3>
+              <p>Router agreement with held-out stage labels.</p>
+            </figcaption>
+            <div class="sl-agree">
+              <div class="sl-ag ours">
+                <span class="sl-ag-num">92.0<small>%</small></span>
+                <span class="sl-ag-bar"><i style="--w: 92.0"></i></span>
+                <b>Rule-based router</b>
+                <span>used by SWE-Ladder</span>
+              </div>
+              <div class="sl-ag">
+                <span class="sl-ag-num">98.63<small>%</small></span>
+                <span class="sl-ag-bar"><i style="--w: 98.63"></i></span>
+                <b>Neural router</b>
+                <span>trained on Qwen3.8-Max annotations</span>
+              </div>
+            </div>
+            <p class="sl-callout">
+              <span aria-hidden="true">!</span>
+              <span>The neural router agrees with the labels more often, yet <strong>trains a worse agent</strong>:
+              annotation agreement alone does not determine training utility.</span>
+            </p>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============================== Analysis ============================== -->
+      <section class="sl-section sl-wrap patch" id="analysis">
+        <header class="sl-rung reveal">
+          <span aria-hidden="true" class="sl-rung-rail"></span>
+          <p class="sl-rung-tag">rung 03 · analysis</p>
+          <h2>The privileges are not interchangeable.</h2>
+        </header>
+        <p class="sl-p">
+          A causal probe restores real environments from base-model trajectories, adds one kind of privilege, and
+          <b>executes</b> the candidate next actions in containers. Each privilege helps most in its own stage.
+        </p>
+        <figure class="sl-panel sl-probe reveal">
+          <figcaption class="sl-panel-head">
+            <h3>Effect of each privilege on the base policy's next action</h3>
+            <p>Shading is relative within each column; the matched-stage privilege is outlined.</p>
+          </figcaption>
+          <div class="sl-probe-grid" role="table" aria-label="Probe hit rates">
+            <span class="corner" role="columnheader">privilege</span>
+            <span class="col loc" role="columnheader">Gold-file contact<small>at LOC moments (93)</small></span>
+            <span class="col rep" role="columnheader">Failing repro produced<small>at REP moments (46)</small></span>
+            <span class="row" role="rowheader">none</span>
+            <i role="cell" style="--v: 0.759">0.759</i><i role="cell" style="--v: 0.540">0.540</i>
+            <span class="row" role="rowheader"><i class="sl-chip loc">+ LOC</i></span>
+            <i class="hit loc" role="cell" style="--v: 0.840">0.840</i><i role="cell" style="--v: 0.511">0.511</i>
+            <span class="row" role="rowheader"><i class="sl-chip rep">+ REP</i></span>
+            <i role="cell" style="--v: 0.790">0.790</i><i class="hit rep" role="cell" style="--v: 0.656">0.656</i>
+            <span class="row" role="rowheader"><i class="sl-chip patch">+ whole answer</i></span>
+            <i role="cell" style="--v: 0.781">0.781</i><i role="cell" style="--v: 0.565">0.565</i>
+          </div>
+          <p class="sl-small">
+            Paired one-sided Wilcoxon: LOC vs. none p = 0.029, LOC vs. whole-answer p = 0.035; REP vs. none p = 0.004,
+            REP vs. whole-answer p = 0.014. Samples are small (93 and 46 moments) and gold-file contact is a proxy for
+            localization.
+          </p>
+        </figure>
+
+        <div class="sl-two">
+          <figure class="sl-panel reveal">
+            <figcaption class="sl-panel-head">
+              <h3>The routed student stays anchored to its stage teachers</h3>
+              <p>Stage-matched reverse KL to each privileged teacher (lower is closer).</p>
+            </figcaption>
+            <div class="sl-kl" role="table" aria-label="Reverse KL">
+              <span role="columnheader"></span>
+              <span class="loc" role="columnheader">LOC</span>
+              <span class="rep" role="columnheader">REP</span>
+              <span class="patch" role="columnheader">PATCH</span>
+              <span role="rowheader">base</span><b>0.136</b><b>0.042</b><b>0.029</b>
+              <span class="ours" role="rowheader">routed, 70 steps</span><b class="ours">0.163</b><b class="ours">0.055</b><b class="ours">0.040</b>
+              <span role="rowheader">whole-answer, 70 steps</span><b class="bad">0.276</b><b class="bad">0.138</b><b class="bad">0.156</b>
+            </div>
+            <p class="sl-small">After 70 RL steps the unrouted student drifts away from all three stage teachers.</p>
+          </figure>
+          <figure class="sl-panel reveal">
+            <figcaption class="sl-panel-head">
+              <h3>Stage funnel on SWE-bench Verified</h3>
+              <p>Behavioral rungs over 500 trajectories each; highlighted is best in column.</p>
+            </figcaption>
+            <div class="sl-kl sl-funnel" role="table" aria-label="Stage funnel">
+              <span role="columnheader"></span>
+              <span class="loc" role="columnheader">loc recall</span>
+              <span class="rep" role="columnheader">reproduce</span>
+              <span class="test" role="columnheader">verify</span>
+              <span class="patch" role="columnheader">solve</span>
+              <span role="rowheader">base</span><b>0.336</b><b>0.594</b><b>0.226</b><b>0.096</b>
+              <span role="rowheader">whole-answer, 70 steps</span><b>0.380</b><b class="top">0.694</b><b>0.162</b><b>0.116</b>
+              <span class="ours" role="rowheader">routed, 70 steps</span><b class="ours top">0.440</b><b class="ours">0.587</b><b class="ours top">0.256</b><b class="ours top">0.141</b>
+            </div>
+            <p class="sl-small">Only <i>solve</i> is test-verified; the other rungs are heuristics over trajectory text.</p>
+          </figure>
+        </div>
+
+        <figure class="sl-panel sl-curves reveal">
+          <figcaption class="sl-panel-head">
+            <h3>Training dynamics on SWE-bench Verified</h3>
+            <p>
+              Localization, reproduction, verification, and solve rate for SWE-Ladder, SDAR, GRPO+OPSD, and the
+              all-at-once variant. Vertical guides mark the LOC, REP, and PATCH phases of SWE-Ladder.
+            </p>
+          </figcaption>
+          <a class="sl-sheet" href="assets/training_curves.png" rel="noopener" target="_blank">
+            <img
+              alt="Localization, reproduction, verification, and solve rate during training for SWE-Ladder, SDAR, GRPO+OPSD, and the all-stages-at-once variant."
+              height="1394"
+              loading="lazy"
+              src="assets/training_curves.png"
+              width="1800"
+            />
+          </a>
+        </figure>
+      </section>
+
+      <!-- ============================ Takeaways ============================ -->
+      <section class="sl-section sl-wrap" id="takeaways">
+        <header class="sl-rung top reveal">
+          <span aria-hidden="true" class="sl-rung-rail"></span>
+          <p class="sl-rung-tag">top of the ladder · takeaways</p>
+          <h2>
+            Don’t show the teacher the whole answer at every step. Give <span class="c-loc">localization</span>,
+            <span class="c-rep">reproduction</span>, and <span class="c-patch">patching</span> each its own evidence,
+            in the order a repair happens.
+          </h2>
+        </header>
+        <div class="sl-term sl-log reveal">
+          <div class="sl-term-bar">
+            <span aria-hidden="true" class="sl-dots"><i></i><i></i><i></i></span>
+            <span class="sl-term-title">git log --reverse takeaways</span>
+          </div>
+          <ol class="sl-log-list">
+            <li class="loc">
+              <span class="sl-log-id">#01</span>
+              <div>
+                <h3>Stage-specific privilege beats whole-answer privilege.</h3>
+                <p>A teacher shown the full reference patch at every step gives every stage the same evidence. Routing the evidence by stage does better.</p>
+              </div>
+              <p class="sl-log-stat"><b>12.4% → 16.4%</b><span>GRPO+OPSD (full patch) vs. SWE-Ladder, R2E-Gym pass@1</span></p>
+            </li>
+            <li class="rep">
+              <span class="sl-log-id">#02</span>
+              <div>
+                <h3>Order matters.</h3>
+                <p>Teaching the stages all at once, in reverse, or reproduction first all fall short of repair order.</p>
+              </div>
+              <p class="sl-log-stat"><b>11.4–12.6%</b><span>other schedules vs. 16.4% in repair order</span></p>
+            </li>
+            <li class="patch">
+              <span class="sl-log-id">#03</span>
+              <div>
+                <h3>Every stage contributes.</h3>
+                <p>Removing any one stage of privileged supervision lowers pass@1.</p>
+              </div>
+              <p class="sl-log-stat"><b>11.2 / 13.2 / 14.0</b><span>without LOC / REP / PATCH</span></p>
+            </li>
+            <li class="loc">
+              <span class="sl-log-id">#04</span>
+              <div>
+                <h3>A simple router trains a better agent.</h3>
+                <p>A neural router matches annotator labels more often but yields lower downstream pass@1.</p>
+              </div>
+              <p class="sl-log-stat"><b>92.0% vs. 98.63%</b><span>rule-based vs. neural agreement</span></p>
+            </li>
+            <li class="rep">
+              <span class="sl-log-id">#05</span>
+              <div>
+                <h3>Shorter rollouts that end on their own.</h3>
+                <p>No teacher, no stage labels, and no fixed pipeline at test time: one end-to-end policy.</p>
+              </div>
+              <p class="sl-log-stat"><b>19.3 steps · 98.6%</b><span>avg. steps and env_done on R2E-Gym</span></p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- =============================== Code =============================== -->
+      <section class="sl-code sl-wrap" id="code">
+        <div class="sl-code-copy">
+          <p class="sl-label">// code</p>
+          <h2>Train a stage-routed agent.</h2>
+          <p>
+            The stage router, privileged-context builders, top-K distillation loss, 24 run definitions, and
+            evaluation on SWE-bench Verified. Built on
+            <a href="https://github.com/RUCAIBox/SWE-Master">SWE-Master</a> (which vendors rllm and R2E-Gym),
+            <a href="https://github.com/All-Hands-AI/OpenHands">OpenHands</a>, and
+            <a href="https://github.com/verl-project/verl">verl</a>.
+          </p>
+          <a class="sl-btn sl-btn-primary" href="https://github.com/ZJU-REAL/SWE-Ladder">View on GitHub ↗</a>
+        </div>
+        <div class="sl-term">
+          <div class="sl-term-bar">
+            <span aria-hidden="true" class="sl-dots"><i></i><i></i><i></i></span>
+            <span class="sl-term-title">quick start</span>
+          </div>
+          <pre class="sl-term-body sl-shell" aria-label="Quick start commands"><code><span class="c"># graft onto the pinned upstream workspace</span>
+<span class="p">$</span> bash integration/install.sh --workspace "$WS"
+<span class="p">$</span> python3 integration/check_install.py --workspace "$WS"
+
+<span class="c"># render and launch the smoke test</span>
+<span class="p">$</span> python3 scripts/tools/render_config.py \
+    training/configs/smoke_stage_routing.yaml \
+    -o /tmp/run.yaml</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="sl-footer">
+      <span><b>swe-ladder</b> · Apache-2.0</span>
+      <span class="sl-footer-stages"><i class="c-loc">LOC</i> → <i class="c-rep">REP</i> → <i class="c-patch">PATCH</i></span>
+    </footer>
+  </body>
+</html>

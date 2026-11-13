@@ -1,6 +1,11 @@
 <div align="center">
 
-# SWE-Ladder
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/title-dark.png">
+    <img src="assets/title.png" alt="SWE-Ladder" width="480">
+  </picture>
+</h1>
 
 ### Learning to Localize, Reproduce, and Patch via Progressive Privileged Self-Distillation
 

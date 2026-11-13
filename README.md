@@ -2,20 +2,30 @@
 
 # SWE-Ladder
 
-**Learning to Localize, Reproduce, and Patch via<br/>Progressive Privileged Self-Distillation**
+### Learning to Localize, Reproduce, and Patch via Progressive Privileged Self-Distillation
 
-[![License](https://img.shields.io/badge/License-Apache--2.0-blue?style=flat-square)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square)](pyproject.toml)
+[![arXiv](https://img.shields.io/badge/arXiv-2610.33667-b31b1b?style=flat-square)](https://arxiv.org/abs/2610.33667)
+[![Project Page](https://img.shields.io/badge/Project-Page-5B9CF5?style=flat-square)](https://zjureal.com/SWE-Ladder/)
 
 </div>
 
 <p align="center">
-  <img src="assets/overview.png" alt="SWE-Ladder overview: a rule-based router assigns each step to LOC, REP, or PATCH; a frozen teacher sees only the matching evidence; GRPO optimizes the full trajectory" width="100%">
+  <img src="assets/hero.png" alt="SWE-Ladder: a student agent climbs the LOC, REP and PATCH rungs of a ladder toward passing tests, while an identical frozen teacher holds up only the evidence for the current rung, a failing test; the used localization card and the face-down patch card wait at its feet" width="100%">
 </p>
 
-<p align="center"><em>
-A rule-based router labels each step of an end-to-end rollout as LOC, REP, or PATCH. In each phase, a frozen teacher receives only that stage's evidence and distills only that stage's tokens, while GRPO continues to optimize the full trajectory.
-</em></p>
+<p align="center">
+  <a href="#overview">Overview</a> ·
+  <a href="#highlights">Highlights</a> ·
+  <a href="#results">Results</a> ·
+  <a href="#method">Method</a> ·
+  <a href="#analysis">Analysis</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#citation">Citation</a>
+</p>
+
+<a id="overview"></a>
+
+## 🔎 Overview
 
 Resolving a repository-level issue requires a software-engineering agent to
 localize the faulty code, reproduce the failure, and patch the code.
@@ -26,11 +36,25 @@ evidence at every stage. **SWE-Ladder** turns each verified repair into three
 stage-specific evidence views and distills them in repair order, training a
 single end-to-end agent without privileged evidence at inference time.
 
-## News
+<p align="center">
+  <img src="assets/overview.png" alt="SWE-Ladder overview: a rule-based router assigns each step to LOC, REP, or PATCH; a frozen teacher sees only the matching evidence; GRPO optimizes the full trajectory" width="100%">
+</p>
 
+<p align="center"><em>
+A rule-based router labels each step of an end-to-end rollout as LOC, REP, or PATCH. In each phase, a frozen teacher receives only that stage's evidence and distills only that stage's tokens, while GRPO continues to optimize the full trajectory.
+</em></p>
+
+<a id="news"></a>
+
+## 📰 News
+
+- **Nov 2026** — Project page released: <https://zjureal.com/SWE-Ladder/>.
+- **Oct 2026** — Paper released on [arXiv](https://arxiv.org/abs/2610.33667).
 - **Oct 2026** — Code released.
 
-## Highlights
+<a id="highlights"></a>
+
+## ✨ Highlights
 
 - **Stage-specific privilege instead of whole-answer privilege.** The teacher sees
   changed files and line ranges for localization, fail-to-pass tests for
@@ -44,7 +68,9 @@ single end-to-end agent without privileged evidence at inference time.
 - **+6.8 points on R2E-Gym and +4.6 points on OpenHands** on SWE-bench
   Verified, without task-specific supervised fine-tuning before RL.
 
-## Results
+<a id="results"></a>
+
+## 📊 Results
 
 Results from the paper. All methods start from Qwen3-4B-Instruct-2507 and are
 evaluated on the 500 instances of SWE-bench Verified without task-specific
@@ -93,7 +119,9 @@ LOC, REP, and PATCH phases of SWE-Ladder.
 All configurations are evaluated in the same environment and protocol within
 each scaffold.
 
-## Method
+<a id="method"></a>
+
+## 🧭 Method
 
 SWE-Ladder has three parts: stage-specific evidence, a deterministic router that
 assigns it, and a progressive schedule that introduces one stage at a time.
@@ -165,7 +193,33 @@ determine training utility.
 
 SWE-Ladder uses the rule-based router; the neural router is an ablation.
 
-## Quick start
+<a id="analysis"></a>
+
+## 🔬 Analysis
+
+The stage-level diagnostics are computed from the same 500 SWE-bench Verified
+trajectories. Localization is gold-file recall, reproduction is creating and
+running a failing reproduction, verification is re-running the reproduction
+after the last edit without a failure, and solve is the official verifier
+result. Additional offline analyses are in [`analysis/`](analysis/README.md).
+
+<a id="requirements"></a>
+
+## 📦 Requirements
+
+The standalone tooling (`scripts/`, `analysis/`, `stage_capability_eval/`,
+`eval/`) runs on plain CPU Python ≥ 3.10:
+`pip install -r requirements.txt`. It uses no accelerator
+stack. The trainer's dependencies — torch or torch_npu, vLLM, verl, Ray — come
+from the upstream rllm environment you install into; `scripts/setup/` has the
+Ascend and CUDA environment builds we used.
+
+The paper's 4B runs used 8× Ascend 910B. [`docs/TRAINING.md`](docs/TRAINING.md)
+has the device-specific knobs.
+
+<a id="quick-start"></a>
+
+## 🚀 Quick Start
 
 ```bash
 git clone https://github.com/ZJU-REAL/SWE-Ladder
@@ -192,7 +246,9 @@ For a CUDA machine, use
 [`integration/README.md`](integration/README.md) for the upstream workspace and
 [`docs/TRAINING.md`](docs/TRAINING.md) for device setup.
 
-## Repository layout
+<a id="repository-layout"></a>
+
+## 🗂️ Repository Layout
 
 | Directory | Contents |
 |---|---|
@@ -207,15 +263,7 @@ For a CUDA machine, use
 | [`docs/`](docs/) | [TRAINING.md](docs/TRAINING.md) — how a run is launched and which knobs are load-bearing. [EVALUATION.md](docs/EVALUATION.md) — evaluation protocols and notes. |
 | [`assets/`](assets/) | Figures from the paper used in this README. |
 
-## Analysis
-
-The stage-level diagnostics are computed from the same 500 SWE-bench Verified
-trajectories. Localization is gold-file recall, reproduction is creating and
-running a failing reproduction, verification is re-running the reproduction
-after the last edit without a failure, and solve is the official verifier
-result. Additional offline analyses are in [`analysis/`](analysis/README.md).
-
-## Scope
+### Scope
 
 This repository contains the training and evaluation code, run configurations,
 and analysis scripts. Datasets and weights are built or downloaded with the
@@ -223,23 +271,24 @@ recipes in [`data/README.md`](data/README.md). Run outputs are produced locally
 and are not part of the release. The private evaluation split is generated
 locally by `stage_capability_eval/` for scoring.
 
-## Requirements
+<a id="citation"></a>
 
-The standalone tooling (`scripts/`, `analysis/`, `stage_capability_eval/`,
-`eval/`) runs on plain CPU Python ≥ 3.10:
-`pip install -r requirements.txt`. It uses no accelerator
-stack. The trainer's dependencies — torch or torch_npu, vLLM, verl, Ray — come
-from the upstream rllm environment you install into; `scripts/setup/` has the
-Ascend and CUDA environment builds we used.
+## 📝 Citation
 
-The paper's 4B runs used 8× Ascend 910B. [`docs/TRAINING.md`](docs/TRAINING.md)
-has the device-specific knobs.
+If you find SWE-Ladder useful, please cite:
 
-## Citation
+```bibtex
+@article{cai2026sweladder,
+  title   = {SWE-Ladder: Learning to Localize, Reproduce, and Patch via Progressive Privileged Self-Distillation},
+  author  = {Cai, Xudong and Lu, Zhengxi and Yan, Yuchen and Shao, Jian and Xiao, Jun and Zhuang, Yueting and Shen, Yongliang},
+  journal = {arXiv preprint arXiv:2610.33667},
+  year    = {2026}
+}
+```
 
-Citation information will be added once the paper is publicly available.
+<a id="license"></a>
 
-## License and attribution
+## 🙏 License and Attribution
 
 Apache-2.0 ([LICENSE](LICENSE)). [NOTICE](NOTICE) records what is derived from
 what: the patches and the generated prompt templates are derived works of

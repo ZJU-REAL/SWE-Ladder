@@ -504,3 +504,21 @@ const spy = new IntersectionObserver(
   setTab(0, false);
   drawWires();
 })();
+
+/* Copy BibTeX */
+document.querySelectorAll("[data-copy]").forEach((button) =>
+  button.addEventListener("click", async () => {
+    const text = document.getElementById(button.dataset.copy).textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      button.textContent = "copied ✓";
+    } catch {
+      button.textContent = "select & copy";
+    }
+    button.classList.add("done");
+    setTimeout(() => {
+      button.textContent = "copy";
+      button.classList.remove("done");
+    }, 1800);
+  }),
+);

@@ -2132,3 +2132,34 @@ pre {
     display: none;
   }
 }
+
+/* -------------------------------- Citation -------------------------------- */
+.sl-cite {
+  padding: 0 0 104px;
+}
+.sl-copy {
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--muted);
+  font: 500 12px/1.2 var(--mono);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.sl-copy:hover {
+  border-color: var(--rep);
+  color: var(--strong);
+}
+.sl-copy.done {
+  border-color: var(--rep);
+  color: var(--rep);
+}
+.sl-bib {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: 13px;
+}

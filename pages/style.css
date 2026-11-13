@@ -2163,3 +2163,16 @@ pre {
   color: var(--text);
   font-size: 13px;
 }
+
+/* ------------------------------- Wordmark --------------------------------- */
+.sl-title {
+  line-height: 0;
+}
+.sl-title img {
+  display: block;
+  width: min(100%, 620px);
+  height: auto;
+}
+.sl-title::after {
+  display: none;
+}

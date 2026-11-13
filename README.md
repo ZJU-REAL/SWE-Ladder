@@ -15,7 +15,7 @@
 </div>
 
 <p align="center">
-  <img src="assets/hero.png" alt="SWE-Ladder: a student agent climbs the LOC, REP and PATCH rungs of a ladder toward passing tests, while an identical frozen teacher holds up only the evidence for the current rung, a failing test; the used localization card and the face-down patch card wait at its feet" width="100%">
+  <img src="assets/hero.jpg" alt="SWE-Ladder: a student agent climbs the LOC, REP and PATCH rungs of a ladder toward passing tests, while an identical frozen teacher holds up only the evidence for the current rung, a failing test; the used localization card and the face-down patch card wait at its feet" width="100%">
 </p>
 
 <p align="center">
